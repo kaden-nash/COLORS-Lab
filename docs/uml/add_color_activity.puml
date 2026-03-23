@@ -1,0 +1,28 @@
+@startuml
+title Add Color Activity Diagram
+
+start
+:User enters Color Name in text field;
+:User clicks "Add Color" button;
+:JavaScript `addColor()` function is called;
+:Create JSON payload with color and userId;
+:Send POST request to `LAMPAPI/AddColor.php`;
+
+partition "LAMPAPI Backend" {
+  :Connect to Database;
+  if (Connection Successful?) then (yes)
+    :Execute INSERT query into Colors table;
+    :Return Empty Error (Success) as JSON;
+  else (no)
+    :Return Connection Error as JSON;
+  endif
+}
+
+:JavaScript processes response;
+if (Status 200 OK?) then (yes)
+  :Display "Color has been added";
+else (no / Error Caught)
+  :Display Error Message;
+endif
+stop
+@enduml

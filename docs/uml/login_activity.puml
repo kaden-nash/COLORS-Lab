@@ -1,0 +1,33 @@
+@startuml
+title Login Activity Diagram
+
+start
+:User enters Login Name and Password;
+:User clicks "Login" button;
+:JavaScript `doLogin()` function is called;
+:Create JSON payload with credentials;
+:Send POST request to `LAMPAPI/Login.php`;
+
+partition "LAMPAPI Backend" {
+  :Connect to Database;
+  if (Connection Successful?) then (yes)
+    :Execute SELECT query for User;
+    if (Record Found?) then (yes)
+      :Return User Data (ID, Name) as JSON;
+    else (no)
+      :Return Error "No Records Found" as JSON;
+    endif
+  else (no)
+    :Return Connection Error as JSON;
+  endif
+}
+
+:JavaScript processes JSON response;
+if (User ID < 1 or Error exists?) then (yes)
+  :Display Error Message;
+else (no)
+  :Save `userId`, `firstName`, `lastName` to Cookie;
+  :Redirect to `color.html`;
+endif
+stop
+@enduml
