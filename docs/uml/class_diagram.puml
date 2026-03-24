@@ -1,0 +1,70 @@
+@startuml
+title Colors Application Class Diagram
+
+package "Frontend (JavaScript)" {
+  class JavaScriptClient <<(S,#FF7700) Script>> {
+    + urlBase : String
+    + extension : String
+    + userId : Integer
+    + firstName : String
+    + lastName : String
+    + doLogin() : void
+    + saveCookie() : void
+    + readCookie() : void
+    + doLogout() : void
+    + addColor() : void
+    + searchColor() : void
+  }
+}
+
+package "Backend (PHP API endpoints)" {
+  class LoginAPI <<(E,#AAAAFF) Endpoint>> {
+    + getRequestInfo() : JSON
+    + sendResultInfoAsJson(obj: String) : void
+    + returnWithError(err: String) : void
+    + returnWithInfo(firstName: String, lastName: String, id: Integer) : void
+  }
+
+  class AddColorAPI <<(E,#AAAAFF) Endpoint>> {
+    + getRequestInfo() : JSON
+    + sendResultInfoAsJson(obj: String) : void
+    + returnWithError(err: String) : void
+  }
+
+  class SearchColorsAPI <<(E,#AAAAFF) Endpoint>> {
+    + getRequestInfo() : JSON
+    + sendResultInfoAsJson(obj: String) : void
+    + returnWithError(err: String) : void
+    + returnWithInfo(searchResults: String) : void
+  }
+}
+
+package "Database (MySQL Entities)" {
+  class Users {
+    + ID : Integer [PK]
+    + DateCreated : DateTime
+    + DateLastLoggedIn : DateTime
+    + FirstName : String
+    + LastName : String
+    + Login : String
+    + Password : String
+  }
+
+  class Colors {
+    + ID : Integer [PK]
+    + UserId : Integer [FK]
+    + Name : String
+  }
+}
+
+' Relationships
+JavaScriptClient ..> LoginAPI : <<POST>> /Login.php
+JavaScriptClient ..> AddColorAPI : <<POST>> /AddColor.php
+JavaScriptClient ..> SearchColorsAPI : <<POST>> /SearchColors.php
+
+LoginAPI ..> Users : reads
+AddColorAPI ..> Colors : inserts
+SearchColorsAPI ..> Colors : reads
+
+Users "1" -- "0..*" Colors : owns
+@enduml
