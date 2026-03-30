@@ -7,8 +7,12 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: '20'
-    - run: npm install -g eslint stylelint stylelint-config-standard htmlhint
-    - run: eslint "**/*.js"
-    - run: stylelint "**/*.css"
-    - run: htmlhint "**/*.html"
+        node-version: 'lts/*'
+    - name: Install Dependencies
+      run: npm install eslint @eslint/js stylelint stylelint-config-standard htmlhint
+
+    - name: Run Linters
+      run: |
+        npx eslint "**/*.js"
+        npx stylelint "**/*.css"
+        npx htmlhint "**/*.html"
