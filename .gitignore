@@ -1,1 +1,15 @@
 .env
+
+# PHP
+vendor/
+.phpunit.result.cache
+.phpunit.cache/
+
+# JS
+node_modules/
+dist/
+.vitest/
+test-results/
+playwright-report/
+blob-report/
+playwright/.local-browsers
