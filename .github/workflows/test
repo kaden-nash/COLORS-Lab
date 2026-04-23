@@ -1,0 +1,52 @@
+name: Run Unit/Integration Tests
+on: [push, pull_request]
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install Jest and Dependencies
+      run: npm install -g jest jest-environment-jsdom
+    - name: Run Javascript Unit Tests
+      run: jest tests/Javascript/
+
+  test-backend:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -proot"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+    - name: Install Composer Dependencies
+      run: composer install
+    - name: Setup Database & Environment
+      run: |
+        mysql -h 127.0.0.1 -u root -proot testdb -e "CREATE TABLE Colors (ID INT AUTO_INCREMENT PRIMARY KEY, UserId INT, Name VARCHAR(255));"
+        mkdir -p LAMPAPI
+        echo "DB_SERVER=127.0.0.1" > LAMPAPI/.env
+        echo "DB_USER=root" >> LAMPAPI/.env
+        echo "DB_PASS=root" >> LAMPAPI/.env
+        echo "DB_NAME=testdb" >> LAMPAPI/.env
+    - name: Start PHP Server
+      run: php -S localhost:8000 -t . &
+    - name: Wait for server to be ready
+      run: sleep 2
+    - name: Run PHP Integration Tests
+      run: vendor/bin/phpunit tests/Integration
