@@ -1,7 +1,9 @@
 {
   "extends": "stylelint-config-standard",
   "rules": {
-    "color-hex-length": "long",
-    "declaration-block-no-duplicate-properties": true
+    "selector-id-pattern": null,
+    "font-family-name-quotes": "always-where-recommended",
+    "alpha-value-notation": "number",
+    "rule-empty-line-before": "always"
   }
 }
