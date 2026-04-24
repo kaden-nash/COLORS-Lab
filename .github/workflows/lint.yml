@@ -9,6 +9,6 @@ jobs:
       with:
         node-version: '20'
     - run: npm install eslint @eslint/js stylelint stylelint-config-standard htmlhint
-    - run: npx eslint public
-    - run: stylelint public
-    - run: htmlhint public
+    - run: npx eslint "public/**/*.js"
+    - run: npx stylelint "public/**/*.css"
+    - run: npx htmlhint "public/**/*.html"
